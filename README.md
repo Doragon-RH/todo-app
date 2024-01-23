@@ -13,6 +13,8 @@ pnpm dev
 # or
 bun dev
 ```
+## react-hook-form のインストール
+npm install react-hook-form　 or  yarn add react-hook-form
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
