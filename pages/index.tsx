@@ -25,8 +25,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 
 const inter = Inter({ subsets: ["latin"] });
+const schema = yup.object().shape({
+  firstName: yup.string().required(),
+  age: yup.number().positive().integer().required(),
+});
 
 export default function Home() {
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema)
+  });
+  const onSubmit = (data: any) => console.log(data);
   return (
     <>
       <Head>
@@ -35,6 +43,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      
       <Box
         sx={{
           display: "flex",
@@ -48,6 +57,17 @@ export default function Home() {
           background: "lightgreen",
           borderRadius: 40,
         }}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* ref={register} でバリデーション機能に登録されます */}
+            <input {...register('firstName')} type="text" />
+            {errors.firstName && <p>{errors.firstName.message}</p>}
+            {/* errors はバリデーションエラー内容を持つ構造体で自動で更新されます */}
+            
+            <input {...register('age')} type="text" />
+            {errors.age && <p>{errors.age.message}</p>}
+            
+            <input type="submit" />
+          </form>
           <Link
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
