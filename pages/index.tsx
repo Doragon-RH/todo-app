@@ -23,6 +23,7 @@ import Button from '@mui/material/Button';
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import { BaseYup } from "./schema/yup";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,14 @@ const schema = yup.object().shape({
   lastName: yup.string().required(),
   age: yup.number().positive().integer().required(),
   website: yup.string().url()
+});
+
+//日本語用のスキーマ定義
+const SignupSchema = BaseYup.object().shape({
+  firstName: BaseYup.string().required().label("名"),
+  lastName: BaseYup.string().label("姓"),
+  age: BaseYup.number().required().positive().integer().label("年齢"),
+  website: BaseYup.string().url().label("WebサイトURL")
 });
 
 export default function Home() {
@@ -60,11 +69,34 @@ export default function Home() {
       </div>
       <div>
         <label>Age</label>
-        <input type="text" {...register('age')} />
+        <input type="number" {...register('age')} />
         {errors.age && <p>{errors.age.message}</p>}
       </div>
       <div>
         <label>Website</label>
+        <input type="text" {...register('website')} />
+        {errors.website && <p>{errors.website.message}</p>}
+      </div>
+      <input type="submit" />
+    </form>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div>
+        <label>名</label>
+        <input type="text" {...register('firstName')} />
+        {errors.firstName && <p>{errors.firstName.message}</p>}
+      </div>
+      <div style={{ marginBottom: 10 }}>
+        <label>姓</label>
+        <input type="text" {...register('lastName')} />
+        {errors.lastName && <p>{errors.lastName.message}</p>}
+      </div>
+      <div>
+        <label>年齢</label>
+        <input type="number" {...register('age')} />
+        {errors.age && <p>{errors.age.message}</p>}
+      </div>
+      <div>
+        <label>WebサイトURL</label>
         <input type="text" {...register('website')} />
         {errors.website && <p>{errors.website.message}</p>}
       </div>
