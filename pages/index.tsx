@@ -22,18 +22,16 @@ import Button from '@mui/material/Button';
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup";
+import * as yup from "yup";//全ての機能をyupとしてインポート
 import { BaseYup } from "./schema/yup";
+
+import { Amplify } from 'aws-amplify';
+import amplifyconfig from '../src/amplifyconfiguration.json';
+Amplify.configure(amplifyconfig);
 
 const inter = Inter({ subsets: ["latin"] });
 
-//スキーマの定義
-const schema = yup.object().shape({
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
-  age: yup.number().positive().integer().required(),
-  website: yup.string().url()
-});
+
 
 //日本語用のスキーマ定義
 const SignupSchema = BaseYup.object().shape({
@@ -43,9 +41,19 @@ const SignupSchema = BaseYup.object().shape({
   website: BaseYup.string().url().label("WebサイトURL")
 });
 
+const num = yup.number().cast('1'); // 1
+
+const obj = yup.object({
+  firstName: yup.string().lowercase().trim(),
+})
+  .json()
+  .camelCase()
+  .cast('{"first_name": "jAnE "}'); // { firstName: 'jane' }
+
+
 export default function Home() {
   const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(SignupSchema)
   });
   const onSubmit = (data: any) => console.log(data);
   return (
@@ -56,30 +64,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <label>First Name</label>
-        <input type="text" {...register('firstName')} />
-        {errors.firstName && <p>{errors.firstName.message}</p>}
-      </div>
-      <div style={{ marginBottom: 10 }}>
-        <label>Last Name</label>
-        <input type="text" {...register('lastName')} />
-        {errors.lastName && <p>{errors.lastName.message}</p>}
-      </div>
-      <div>
-        <label>Age</label>
-        <input type="number" {...register('age')} />
-        {errors.age && <p>{errors.age.message}</p>}
-      </div>
-      <div>
-        <label>Website</label>
-        <input type="text" {...register('website')} />
-        {errors.website && <p>{errors.website.message}</p>}
-      </div>
-      <input type="submit" />
-    </form>
-    <form onSubmit={handleSubmit(onSubmit)}>
+      <Box sx={{
+        fontSize: "1.5rem",
+        padding: "1rem",
+      }}>
+      <form onSubmit={handleSubmit(onSubmit)}>
       <div>
         <label>名</label>
         <input type="text" {...register('firstName')} />
@@ -102,6 +91,8 @@ export default function Home() {
       </div>
       <input type="submit" />
     </form>
+      </Box>
+    
       <Box
         sx={{
           display: "flex",
