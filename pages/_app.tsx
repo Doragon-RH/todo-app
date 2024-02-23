@@ -2,14 +2,24 @@ import { useEffect, useState } from 'react';
 
 import { generateClient } from 'aws-amplify/api';
 
-import { createTodo } from '../src/graphql/mutations';
+import * as mutations from '../src/graphql/mutations';
 import { listTodos } from '../src/graphql/queries';
 import { type CreateTodoInput, type Todo } from '../src/API';
 
-const initialState: CreateTodoInput = { name: '', description: '' };
-const client = generateClient();
+import { withAuthenticator, Button, Heading } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import { type AuthUser } from "aws-amplify/auth";
+import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
 
-const App = () => {
+
+const initialState: CreateTodoInput = { name: '', description: '' };
+const client = generateClient();//APIクライアントを生成
+
+type AppProps = {
+  signOut?: UseAuthenticator["signOut"]; //() => void;
+  user?: AuthUser;
+};
+const App: React.FC<AppProps> = ({ signOut, user }) => {
   const [formState, setFormState] = useState<CreateTodoInput>(initialState);
   const [todos, setTodos] = useState<Todo[] | CreateTodoInput[]>([]);
 
@@ -29,14 +39,14 @@ const App = () => {
     }
   }
 
-  async function addTodo() {
+  async function addTodo() {//新しいtodoを追加する
     try {
       if (!formState.name || !formState.description) return;
       const todo = { ...formState };
       setTodos([...todos, todo]);
       setFormState(initialState);
       await client.graphql({
-        query: createTodo,
+        query: mutations.createTodo,
         variables: {
           input: todo,
         },
@@ -45,10 +55,33 @@ const App = () => {
       console.log('error creating todo:', err);
     }
   }
-
+  async function apdateTodo() {
+  const todoDetails = {
+    id: 'some_id',
+    //  _version: 'current_version', // add the "_version" field if your AppSync API has conflict detection (required for DataStore) enabled
+    description: 'Updated description'
+  };
+  
+  const updatedTodo = await client.graphql({
+    query: mutations.updateTodo,
+    variables: { input: todoDetails }
+  });
+}
+async function deleteTodo() {
+  const todoDetails = {
+    id: 'some_id'
+  };
+  
+  const deletedTodo = await client.graphql({
+    query: mutations.deleteTodo,
+    variables: { input: todoDetails }
+  });
+}
   return (
     <div style={styles.container}>
-      <h2>Amplify Todos</h2>
+    <Heading level={1}>Hello {user?.username}</Heading>
+    <Button onClick={signOut}>Sign out</Button>
+    <h2>Amplify Todos</h2>
       <input
         onChange={(event) =>
           setFormState({ ...formState, name: event.target.value })
@@ -106,4 +139,4 @@ const styles = {
   },
 } as const;
 
-export default App;
+export default withAuthenticator(App);
