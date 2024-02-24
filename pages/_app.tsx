@@ -4,7 +4,7 @@ import { generateClient } from 'aws-amplify/api';
 
 import * as mutations from '../src/graphql/mutations';
 import { listTodos } from '../src/graphql/queries';
-import { type CreateTodoInput, type Todo } from '../src/API';
+import { type CreateTodoInput,type UpdateTodoInput,type DeleteTodoInput, type Todo } from '../src/API';  //API.tsから機能・定義をインポート
 
 import { withAuthenticator, Button, Heading } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
@@ -13,6 +13,8 @@ import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
 
 
 const initialState: CreateTodoInput = { name: '', description: '' };
+const nextTodo: UpdateTodoInput = { id: '', name: '', description: ''};
+const deleteTodo: DeleteTodoInput = { id: ''};
 const client = generateClient();//APIクライアントを生成
 
 type AppProps = {
@@ -22,7 +24,9 @@ type AppProps = {
 const App: React.FC<AppProps> = ({ signOut, user }) => {
   const [formState, setFormState] = useState<CreateTodoInput>(initialState);
   const [todos, setTodos] = useState<Todo[] | CreateTodoInput[]>([]);
-
+  const todoDetails = {
+    id: 'some_id'
+  };
   useEffect(() => {//コンポーネントが呼び出された後、フックが呼び出され、関数が呼び出される
     fetchTodos();
   }, []);
@@ -56,27 +60,28 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
     }
   }
   async function apdateTodo() {
-  const todoDetails = {
-    id: 'some_id',
-    //  _version: 'current_version', // add the "_version" field if your AppSync API has conflict detection (required for DataStore) enabled
-    description: 'Updated description'
-  };
+    const todoDetails = {
+      id: 'some_id',
+      //  _version: 'current_version', // add the "_version" field if your AppSync API has conflict detection (required for DataStore) enabled
+      description: 'Updated description'
+    };
   
-  const updatedTodo = await client.graphql({
-    query: mutations.updateTodo,
-    variables: { input: todoDetails }
-  });
-}
-async function deleteTodo() {
-  const todoDetails = {
-    id: 'some_id'
-  };
-  
-  const deletedTodo = await client.graphql({
-    query: mutations.deleteTodo,
-    variables: { input: todoDetails }
-  });
-}
+    const updatedTodo = await client.graphql({
+      query: mutations.updateTodo,
+      variables: { input: todoDetails }
+    });
+  }
+  async function deleteTodo( id : string) {
+    try {
+      await client.graphql({
+      query: mutations.deleteTodo,
+      variables: { input: { id } },
+    });
+      await fetchTodos();
+    } catch (error) {
+      console.error(error);
+    }
+  }
   return (
     <div style={styles.container}>
     <Heading level={1}>Hello {user?.username}</Heading>
@@ -105,9 +110,23 @@ async function deleteTodo() {
         <div key={todo.id ? todo.id : index} style={styles.todo}>
           <p style={styles.todoName}>{todo.name}</p>
           <p style={styles.todoDescription}>{todo.description}</p>
+          <button onClick={() => {
+            if (typeof todo.id === 'string') {//delete構文が分からず苦労しました。
+              deleteTodo(todo.id);
+            }
+          }}>削除</button>
         </div>
       ))}
+        {/* <ul>
+        {todos.map((todo) => (
+          <li>
+            {todo.name}
+            <button onClick={deleteTodo(todo.id)}>削除</button>
+          </li>
+        ))}
+      </ul> */}
     </div>
+    
   );
 };
 
