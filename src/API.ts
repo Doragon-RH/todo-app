@@ -6,6 +6,7 @@ export type CreateTodoInput = {
   id?: string | null,
   name: string,
   description?: string | null,
+  limit?: string | null,
 };
 
 export type ModelTodoConditionInput = {
@@ -63,6 +64,7 @@ export type Todo = {
   description?: string | null,
   createdAt: string,
   updatedAt: string,
+  limit?: string | null,
 };
 
 export type UpdateTodoInput = {
