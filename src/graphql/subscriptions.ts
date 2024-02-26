@@ -13,6 +13,7 @@ export const onCreateTodo = /* GraphQL */ `subscription OnCreateTodo($filter: Mo
     id
     name
     description
+    limit
     createdAt
     updatedAt
     __typename
@@ -27,6 +28,7 @@ export const onUpdateTodo = /* GraphQL */ `subscription OnUpdateTodo($filter: Mo
     id
     name
     description
+    limit
     createdAt
     updatedAt
     __typename
@@ -41,6 +43,7 @@ export const onDeleteTodo = /* GraphQL */ `subscription OnDeleteTodo($filter: Mo
     id
     name
     description
+    limit
     createdAt
     updatedAt
     __typename

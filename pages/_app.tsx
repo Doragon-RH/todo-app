@@ -8,7 +8,6 @@ import Box from "@mui/material/Box";
 import { blue } from '@mui/material/colors';
 import AppBar from '@mui/material/AppBar';
 import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
@@ -17,8 +16,19 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import {
+  Alert,
+  Button,
+  Card,
+  Divider,
+  FormLabel,
+  Input,
+  Slide,
+  SlideProps,
+  Snackbar,
+  Stack,
+  Typography,
+} from "@mui/material";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -45,14 +55,13 @@ Amplify.configure(amplifyconfig);
 
 const SignupSchema = BaseYup.object().shape({
   id: BaseYup.string().required().label("ID"),
-  TODO: BaseYup.string().required().label("予定"),
-  statement: BaseYup.string().label("詳細"),
+  name: BaseYup.string().required().label("予定"),
+  description: BaseYup.string().label("詳細"),
   limit: BaseYup.date().required().label("期限"),
-  website: BaseYup.string().url().label("WebサイトURL")
 });
 
 
-const initialState: CreateTodoInput = { name: '', description: '' };
+const initialState: CreateTodoInput = { name: '', description: '', limit: ''};
 // const nextTodo: UpdateTodoInput = { id: '', name: '', description: ''};
 const client = generateClient();//APIクライアントを生成
 
@@ -132,74 +141,84 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <main>
+      <Stack spacing={3} m={"2rem 1rem"}>
       <Heading level={1}>Hello {user?.username}</Heading>
       <Button onClick={signOut}>Sign out</Button>
       <Box sx={{
         fontSize: "1.5rem",
         padding: "1rem",
       }}>
-        <input {...register('TODO')}
+        <Input {...register('name')}
         onChange={(event) =>
           setFormState({ ...formState, name: event.target.value })
         }
         value={formState.name}
         placeholder="予定"
       />
-      {errors.TODO && <p>{errors.TODO.message}</p>}
-      <input {...register('statement')}
+      {errors.name && <p>{errors.name.message}</p>}
+      <Input {...register('description')}
         onChange={(event) =>
           setFormState({ ...formState, description: event.target.value })
         }
         value={formState.description as string}
         placeholder="詳細"
       />
-      {errors.statement && <p>{errors.statement.message}</p>}
-      <label>期限</label>
-        <input type="date" 
+      {errors.description && <p>{errors.description.message}</p>}
+        <Input type="date" 
         {...register('limit')} 
         onChange={(event) =>
           setFormState({ ...formState, limit: event.target.value })
         }/>
         {errors.limit && <p>{errors.limit.message}</p>}
-      <Button  onClick={addTodo}>
+      <Button  type="submit" variant="contained" onClick={addTodo}>
         Create Todo
       </Button>
-      
-      {/* <form onSubmit={addTodo} name="Create TODO">
-      <div>
-        <label>予定</label>
-        <input type="text" {...register('TODO')} />
-        {errors.TODO && <p>{errors.TODO.message}</p>}
-      </div> */}
-      {/* <div style={{ marginBottom: 10 }}>
-        <label>詳細</label>
-        <input type="text" {...register('statement')} />
-        {errors.statement && <p>{errors.statement.message}</p>}
-      </div>
-      <div>
-        <label>期限</label>
-        <input type="date" {...register('limit')} />
-        {errors.limit && <p>{errors.limit.message}</p>}
-      </div>
-      <div>
-        <label>WebサイトURL</label>
-        <input type="text" {...register('website')} />
-        {errors.website && <p>{errors.website.message}</p>}
-      </div>
-      <input type="submit" />
-    </form> */}
-    {todos.map((todo, index) => (
+      <Stack spacing={3}>
+            <Typography variant="h3">Todo List</Typography>
+            <Stack spacing={3}>
+              {todos.map((todo) => (
+                <Card key={todo.id} sx={{ py: "1rem", px: "2rem" }}>
+                  <Stack>
+                    <Typography variant="h6" fontWeight={"bold"}>
+                      {todo.name}
+                    </Typography>
+                    <Typography variant="body1">{todo.description}</Typography>
+                    <Typography variant="body1">{todo.limit}</Typography>
+                  </Stack>
+                  <Stack
+                    direction={"row"}
+                    gap={2}
+                    sx={{ justifyContent: "flex-end" }}
+                  >
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        if (typeof todo?.id === "string") {//delete構文が分からず苦労しました。
+                          deleteTodo(todo.id);
+                        }
+                      }}
+                    >
+                      DONE
+                    </Button>
+                  </Stack>
+                </Card>
+              ))}
+            </Stack>
+          </Stack>
+          
+    {/* {todos.map((todo, index) => (
         <div key={todo.id ? todo.id : index} >
           <p >{todo.name}</p>
           <p >{todo.description}</p>
           <p >{todo.limit}</p>
-          <button onClick={() => {
-            if (typeof todo.id === 'string') {//delete構文が分からず苦労しました。
+          <Button onClick={() => {
+            if (typeof todo.id === 'string') {
               deleteTodo(todo.id);
             }
-          }}>削除</button>
+          }}>削除</Button>
         </div>
-      ))}
+      ))} */}
       </Box>
     
       <Box
@@ -241,7 +260,8 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
           </Box>
         </Link>
         </Box>
-       
+        </Stack>
+        </main>
     </>
   );
 };

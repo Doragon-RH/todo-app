@@ -13,6 +13,7 @@ export const getTodo = /* GraphQL */ `query GetTodo($id: ID!) {
     id
     name
     description
+    limit
     createdAt
     updatedAt
     __typename
@@ -29,6 +30,7 @@ export const listTodos = /* GraphQL */ `query ListTodos(
       id
       name
       description
+      limit
       createdAt
       updatedAt
       __typename
