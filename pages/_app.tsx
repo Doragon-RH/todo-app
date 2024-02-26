@@ -1,38 +1,17 @@
-import Head from "next/head";
-import { Inter } from "next/font/google";
 import * as React from 'react';
 import Image from 'next/image';
 import Link from "@mui/material/Link";
-import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
-import { blue } from '@mui/material/colors';
-import AppBar from '@mui/material/AppBar';
-import CssBaseline from '@mui/material/CssBaseline';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
 import {
-  Alert,
   Button,
   Card,
-  Divider,
-  FormLabel,
   Input,
-  Slide,
-  SlideProps,
-  Snackbar,
   Stack,
   Typography,
 } from "@mui/material";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { BaseYup } from "./schema/yup";
 
 import { Amplify } from 'aws-amplify';
 import amplifyconfig from '../src/amplifyconfiguration.json';
@@ -44,13 +23,60 @@ import { generateClient } from 'aws-amplify/api';
 
 import * as mutations from '../src/graphql/mutations';
 import { listTodos } from '../src/graphql/queries';
-import { type CreateTodoInput,type UpdateTodoInput, type Todo } from '../src/API';  //API.tsから機能・定義をインポート
+import { type CreateTodoInput, type Todo } from '../src/API';  //API.tsから機能・定義をインポート
 
 import { withAuthenticator,  Heading } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { type AuthUser } from "aws-amplify/auth";
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
 
+
+import * as yup from "yup";
+
+const LocaleJP = {
+  mixed: {
+    default: "${path}は無効です",
+    required: "${path}は必須フィールドです",
+    oneOf: "${path}は次の値のいずれかでなければなりません:${values}",
+    notOneOf: "${path}は次の値のいずれかであってはなりません:${values}"
+  },
+  string: {
+    length: "${path}は正確に${length}文字でなければなりません",
+    min: "${path}は少なくとも${min}文字でなければなりません",
+    max: "${path}は最大${max}文字でなければなりません",
+    matches: '${path}は次と一致する必要があります: "${regex}"',
+    email: "${path}はメールアドレス形式である必要があります",
+    url: "${path}は有効なURLでなければなりません",
+    trim: "${path}はトリミングされた文字列でなければなりません",
+    lowercase: "${path}は小文字の文字列でなければなりません",
+    uppercase: "${path}は大文字の文字列でなければなりません"
+  },
+  number: {
+    min: "${path}は${min}以上である必要があります",
+    max: "${path}は${max}以下でなければなりません",
+    lessThan: "${path}は${less}より小さくなければなりません",
+    moreThan: "${path}は${more}より大きくなければなりません",
+    notEqual: "${path}は${notEqual}と等しくない必要があります",
+    positive: "${path}は正の数でなければなりません",
+    negative: "${path}は負の数でなければなりません",
+    integer: "${path}は整数でなければなりません"
+  },
+  date: {
+    min: "${path}フィールドは${min}より後でなければなりません",
+    max: "${path}フィールドは${max}より前でなければなりません"
+  },
+  object: {
+    noUnknown:
+      "${path}フィールドには,オブジェクトシェイプで指定されていないキーを含めることはできません"
+  },
+  array: {
+    min: "${path}フィールドには少なくとも${min}の項目が必要です",
+    max: "${path}フィールドには${max}以下の項目が必要です"
+  }
+};
+
+yup.setLocale(LocaleJP);
+const BaseYup = yup;
 Amplify.configure(amplifyconfig);
 
 const SignupSchema = BaseYup.object().shape({
@@ -75,7 +101,6 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(SignupSchema)
   });
-  const onSubmit = (data: any) => console.log(data);
 
   useEffect(() => {//コンポーネントが呼び出された後、フックが呼び出され、関数が呼び出される
     fetchTodos();
@@ -200,19 +225,6 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
               ))}
             </Stack>
           </Stack>
-          
-    {/* {todos.map((todo, index) => (
-        <div key={todo.id ? todo.id : index} >
-          <p >{todo.name}</p>
-          <p >{todo.description}</p>
-          <p >{todo.limit}</p>
-          <Button onClick={() => {
-            if (typeof todo.id === 'string') {
-              deleteTodo(todo.id);
-            }
-          }}>削除</Button>
-        </div>
-      ))} */}
       </Box>
     
       <Box
