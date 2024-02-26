@@ -66,6 +66,7 @@ export type Todo = {
   limit?: string | null,
   createdAt: string,
   updatedAt: string,
+  owner?: string | null,
 };
 
 export type UpdateTodoInput = {
@@ -164,6 +165,7 @@ export type CreateTodoMutation = {
     limit?: string | null,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
 };
 
@@ -181,6 +183,7 @@ export type UpdateTodoMutation = {
     limit?: string | null,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
 };
 
@@ -198,6 +201,7 @@ export type DeleteTodoMutation = {
     limit?: string | null,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
 };
 
@@ -214,6 +218,7 @@ export type GetTodoQuery = {
     limit?: string | null,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
 };
 
@@ -234,6 +239,7 @@ export type ListTodosQuery = {
       limit?: string | null,
       createdAt: string,
       updatedAt: string,
+      owner?: string | null,
     } | null >,
     nextToken?: string | null,
   } | null,
@@ -241,6 +247,7 @@ export type ListTodosQuery = {
 
 export type OnCreateTodoSubscriptionVariables = {
   filter?: ModelSubscriptionTodoFilterInput | null,
+  owner?: string | null,
 };
 
 export type OnCreateTodoSubscription = {
@@ -252,11 +259,13 @@ export type OnCreateTodoSubscription = {
     limit?: string | null,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
 };
 
 export type OnUpdateTodoSubscriptionVariables = {
   filter?: ModelSubscriptionTodoFilterInput | null,
+  owner?: string | null,
 };
 
 export type OnUpdateTodoSubscription = {
@@ -268,11 +277,13 @@ export type OnUpdateTodoSubscription = {
     limit?: string | null,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
 };
 
 export type OnDeleteTodoSubscriptionVariables = {
   filter?: ModelSubscriptionTodoFilterInput | null,
+  owner?: string | null,
 };
 
 export type OnDeleteTodoSubscription = {
@@ -284,5 +295,6 @@ export type OnDeleteTodoSubscription = {
     limit?: string | null,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
 };

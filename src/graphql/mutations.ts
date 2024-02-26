@@ -19,6 +19,7 @@ export const createTodo = /* GraphQL */ `mutation CreateTodo(
     limit
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -37,6 +38,7 @@ export const updateTodo = /* GraphQL */ `mutation UpdateTodo(
     limit
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
@@ -55,6 +57,7 @@ export const deleteTodo = /* GraphQL */ `mutation DeleteTodo(
     limit
     createdAt
     updatedAt
+    owner
     __typename
   }
 }
