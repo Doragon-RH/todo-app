@@ -7,7 +7,7 @@
             "UserPoolId"
           ],
           "category": "auth",
-          "resourceName": "reactamplified85df624b"
+          "resourceName": "reactamplifiedb8e27b84"
         }
       ],
       "output": {
@@ -16,7 +16,7 @@
             {
               "authenticationType": "AMAZON_COGNITO_USER_POOLS",
               "userPoolConfig": {
-                "userPoolId": "authreactamplified85df624b"
+                "userPoolId": "authreactamplifiedb8e27b84"
               }
             }
           ],
@@ -33,7 +33,7 @@
     }
   },
   "auth": {
-    "reactamplified85df624b": {
+    "reactamplifiedb8e27b84": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {

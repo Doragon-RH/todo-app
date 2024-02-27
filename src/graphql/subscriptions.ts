@@ -8,18 +8,14 @@ type GeneratedSubscription<InputType, OutputType> = string & {
   __generatedSubscriptionOutput: OutputType;
 };
 
-export const onCreateTodo = /* GraphQL */ `subscription OnCreateTodo(
-  $filter: ModelSubscriptionTodoFilterInput
-  $owner: String
-) {
-  onCreateTodo(filter: $filter, owner: $owner) {
+export const onCreateTodo = /* GraphQL */ `subscription OnCreateTodo($filter: ModelSubscriptionTodoFilterInput) {
+  onCreateTodo(filter: $filter) {
     id
     name
     description
     limit
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -27,18 +23,14 @@ export const onCreateTodo = /* GraphQL */ `subscription OnCreateTodo(
   APITypes.OnCreateTodoSubscriptionVariables,
   APITypes.OnCreateTodoSubscription
 >;
-export const onUpdateTodo = /* GraphQL */ `subscription OnUpdateTodo(
-  $filter: ModelSubscriptionTodoFilterInput
-  $owner: String
-) {
-  onUpdateTodo(filter: $filter, owner: $owner) {
+export const onUpdateTodo = /* GraphQL */ `subscription OnUpdateTodo($filter: ModelSubscriptionTodoFilterInput) {
+  onUpdateTodo(filter: $filter) {
     id
     name
     description
     limit
     createdAt
     updatedAt
-    owner
     __typename
   }
 }
@@ -46,18 +38,14 @@ export const onUpdateTodo = /* GraphQL */ `subscription OnUpdateTodo(
   APITypes.OnUpdateTodoSubscriptionVariables,
   APITypes.OnUpdateTodoSubscription
 >;
-export const onDeleteTodo = /* GraphQL */ `subscription OnDeleteTodo(
-  $filter: ModelSubscriptionTodoFilterInput
-  $owner: String
-) {
-  onDeleteTodo(filter: $filter, owner: $owner) {
+export const onDeleteTodo = /* GraphQL */ `subscription OnDeleteTodo($filter: ModelSubscriptionTodoFilterInput) {
+  onDeleteTodo(filter: $filter) {
     id
     name
     description
     limit
     createdAt
     updatedAt
-    owner
     __typename
   }
 }

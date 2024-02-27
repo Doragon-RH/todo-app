@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Image from 'next/image';
 import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
@@ -16,7 +15,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Amplify } from 'aws-amplify';
 import amplifyconfig from '../src/amplifyconfiguration.json';
 
-
 import { useEffect, useState } from 'react';
 
 import { generateClient } from 'aws-amplify/api';
@@ -29,7 +27,6 @@ import { withAuthenticator,  Heading } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { type AuthUser } from "aws-amplify/auth";
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core";
-
 
 import * as yup from "yup";
 
@@ -83,12 +80,10 @@ const SignupSchema = BaseYup.object().shape({
   id: BaseYup.string().required().label("ID"),
   name: BaseYup.string().required().label("予定"),
   description: BaseYup.string().label("詳細"),
-  limit: BaseYup.date().required().label("期限"),
+  limit: BaseYup.string().required().label("期限"),
 });
 
-
 const initialState: CreateTodoInput = { name: '', description: '', limit: ''};
-// const nextTodo: UpdateTodoInput = { id: '', name: '', description: ''};
 const client = generateClient();//APIクライアントを生成
 
 type AppProps = {
@@ -98,7 +93,7 @@ type AppProps = {
 const App: React.FC<AppProps> = ({ signOut, user }) => {
   const [formState, setFormState] = useState<CreateTodoInput>(initialState);
   const [todos, setTodos] = useState<Todo[] | CreateTodoInput[]>([]);
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, formState: { errors } } = useForm({
     resolver: yupResolver(SignupSchema)
   });
 
@@ -135,18 +130,6 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
       console.log('error creating todo:', err);
     }
   }
-  // async function updateTodo() {
-  //   const todoDetails = {
-  //     id: 'some_id',
-  //     //  _version: 'current_version', // add the "_version" field if your AppSync API has conflict detection (required for DataStore) enabled
-  //     description: 'Updated description'
-  //   };
-  
-  //   const updatedTodo = await client.graphql({
-  //     query: mutations.updateTodo,
-  //     variables: { input: todoDetails }
-  //   });
-  // }
   async function deleteTodo( id : string) {
     try {
       await client.graphql({
@@ -188,7 +171,8 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
         {...register('limit')} 
         onChange={(event) =>
           setFormState({ ...formState, limit: event.target.value })
-        }/>
+        }
+        value={formState.limit}/>
         {errors.limit && <p>{errors.limit.message}</p>}
       <Button  type="submit" variant="contained" onClick={addTodo}>
         Create Todo
@@ -196,8 +180,8 @@ const App: React.FC<AppProps> = ({ signOut, user }) => {
       <Stack spacing={3}>
             <Typography variant="h3">Todo List</Typography>
             <Stack spacing={3}>
-              {todos.map((todo) => (
-                <Card key={todo.id} sx={{ py: "1rem", px: "2rem" }}>
+              {todos.map((todo, index) => (
+                <Card key={todo.id ? todo.id : index} sx={{ py: "1rem", px: "2rem" }}>
                   <Stack>
                     <Typography variant="h6" fontWeight={"bold"}>
                       {todo.name}
