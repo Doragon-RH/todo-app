@@ -1,5 +1,5 @@
 {
-  "projectName": "reactamplified",
+  "projectName": "todoapp",
   "version": "3.1",
   "frontend": "javascript",
   "javascript": {
@@ -8,8 +8,7 @@
       "SourceDir": "src",
       "DistributionDir": "build",
       "BuildCommand": "npm run-script build",
-      "StartCommand": "npm run-script start",
-      "ServerlessContainers": true
+      "StartCommand": "npm run-script start"
     }
   },
   "providers": [
